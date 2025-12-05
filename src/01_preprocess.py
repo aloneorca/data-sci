@@ -14,6 +14,9 @@ def preprocess(in_pkl="data/scopus_data.pkl", out_pkl="data/df_scopus.pkl"):
     df["cited_by_count"] = df["cited_by_count"].replace("", 0).fillna(0).astype(int, errors="ignore")
     df["publication_year"] = pd.to_numeric(df["publication_year"], errors="coerce").fillna(0).astype(int)
     df["publication_name"] = df["publication_name"].fillna("").astype(str)
+    df["author_counted"] = df["author_counted"].fillna(0).astype(int)
+    df["reference_count"] = df["reference_count"].fillna(0).astype(int)
+    df["cited_by_count"] = df["cited_by_count"].fillna(0).astype(int)
     # Flatten classification_code if present
     def extract_codes(c):
         if isinstance(c, list):

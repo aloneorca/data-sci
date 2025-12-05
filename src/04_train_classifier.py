@@ -20,9 +20,6 @@ def train_xgb(df_pkl="data/df_scopus.pkl", models_dir="models", pca_n=100):
     pca = PCA(n_components=pca_n, random_state=42)
     X_pca = pca.fit_transform(X_emb)
 
-    df["author_counted"] = df["author_counted"].fillna(0).astype(int)
-    df["reference_count"] = df["reference_count"].fillna(0).astype(int)
-    df["cited_by_count"] = df["cited_by_count"].fillna(0).astype(int)
     X_meta = df[["author_counted", "reference_count", "cited_by_count"]].values
     scaler = StandardScaler()
     X_meta = scaler.fit_transform(X_meta)
