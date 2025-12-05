@@ -1,14 +1,14 @@
 import streamlit as st
-from recommend3 import recommend_for_text
+from recommend import recommend_for_text
 import pandas as pd
 import altair as alt   # for scatter plot
 
 st.set_page_config(layout="wide", page_title="Scopus Recommender")
 st.title("📘 Scopus Journal Recommender")
 
-# ----------------------------
-# Sidebar – inputs
-# ----------------------------
+
+# Sidebar inputs
+
 with st.sidebar:
     st.header("New Manuscript")
     title = st.text_input("Title", "")
@@ -19,9 +19,8 @@ with st.sidebar:
     top_k = st.slider("Top K results", 5, 30, 15)
     model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
-# ----------------------------
-# Main logic
-# ----------------------------
+# Main 
+
 if st.sidebar.button("Recommend"):
     if not title.strip():
         st.error("Please provide a title.")
@@ -38,9 +37,7 @@ if st.sidebar.button("Recommend"):
             paper_level=paper_level
         )
 
-    # ----------------------------
-    # Convert to DataFrame
-    # ----------------------------
+    # convert to dataframe    
     rows = []
     for r in results:
         rows.append({
@@ -54,9 +51,8 @@ if st.sidebar.button("Recommend"):
     df = pd.DataFrame(rows)
     df = df.sort_values(by="score", ascending=False).reset_index(drop=True).reset_index()
 
-    # ----------------------------
+
     # Summary Section
-    # ----------------------------
     st.subheader("📊 Summary")
 
     col1, col2, col3 = st.columns(3)
@@ -64,9 +60,7 @@ if st.sidebar.button("Recommend"):
     col2.metric("Highest Score", f"{df['score'].max():.3f}")
     col3.metric("Total Recommendations", len(df))
 
-    # ----------------------------
     # Scatter plot of scores
-    # ----------------------------
     st.subheader("📈 Score Distribution")
 
     scatter = (
@@ -81,9 +75,7 @@ if st.sidebar.button("Recommend"):
 
     st.altair_chart(scatter, use_container_width=True)
 
-    # ----------------------------
     # Group by confidence
-    # ----------------------------
     st.subheader("📌 Recommendations by Confidence")
 
     confidence_order = ["HIGH", "MEDIUM", "LOW"]
@@ -106,9 +98,7 @@ if st.sidebar.button("Recommend"):
 
                 st.markdown("---")
 
-    # ----------------------------
     # CSV Download
-    # ----------------------------
     csv = df.to_csv(index=False)
     st.download_button(
         "⬇️ Download CSV",
